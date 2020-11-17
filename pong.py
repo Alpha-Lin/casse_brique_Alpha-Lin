@@ -59,7 +59,7 @@ class Balle:
             if self.x - RAYON_BALLE < XMIN:
                 self.vx = -self.vx
             if self.y + RAYON_BALLE > YMAX:
-                self.vy = -self.vy
+                self.sur_raquette = True
             if self.y - RAYON_BALLE < YMIN:
                 self.vy = -self.vy
 
