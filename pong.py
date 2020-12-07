@@ -3,6 +3,7 @@ import sys # Pour quitter proprement
 import pygame # Le module Pygame
 import pygame.freetype # Pour afficher du texte
 import math
+import time
 
 pygame.init() # initialisation de Pygame
 
@@ -45,7 +46,7 @@ class Balle:
         angle = 90 + 80 * diff/longueur_totale
         self.vitesse_par_angle(angle)
 
-    def deplacer(self, raquette):
+    def deplacer(self, raquette, instance_jeu):
         if self.sur_raquette:
             self.y = raquette.y - 2*RAYON_BALLE
             self.x = raquette.x
@@ -60,11 +61,17 @@ class Balle:
                 self.vx = -self.vx
             if self.y + RAYON_BALLE > YMAX:
                 self.sur_raquette = True
+                instance_jeu.vie -= 1
             if self.y - RAYON_BALLE < YMIN:
                 self.vy = -self.vy
 
 class Jeu:
-    def __init__(self):
+    def __init__(self, vie):
+        self.vieConst = vie
+        self.initialisation(vie)
+
+    def initialisation(self, vie):
+        self.vie = vie
         self.balle = Balle()
         self.raquette = Raquette()
         self.lignesBriques = [[Brique(i * 70 + 25 + 15, j * 50 + 15 + 15) for j in range(5)] for i in range(11)]
@@ -81,21 +88,33 @@ class Jeu:
 
     def mise_a_jour(self):
         x, y = pygame.mouse.get_pos()
-        self.balle.deplacer(self.raquette)
-        for briques in self.lignesBriques:
-            for brique in briques:
-                if brique.en_vie():
-                    brique.collision_balle(self.balle)
-        self.raquette.deplacer(x)
+        self.balle.deplacer(self.raquette, self)
+        if self.vie == 0: # Quand la vie tombe à 0
+            self.initialisation(self.vieConst)
+        else:
+            for briques in self.lignesBriques:
+                for brique in briques:
+                    if brique.en_vie():
+                        brique.collision_balle(self.balle)
+            self.raquette.deplacer(x)
 
     def affichage(self):
         screen.fill(NOIR) # on efface l'écran
         self.balle.afficher()
         self.raquette.afficher()
+        score = 0
         for briques in self.lignesBriques:
             for brique in briques:
                 if brique.en_vie():
                     brique.afficher()
+                else:
+                    score += 1
+        texte, rect = myfont.render("Score : " + str(score), (125, 125, 125), size=16)
+        rect.topleft = (0 + width//100, 0 + height//100)
+        screen.blit(texte, rect)
+        texte, rect = myfont.render("Vie : " + str(self.vie), (125, 125, 125), size=16)
+        rect.topleft = (0 + width//100, 0 + height//100 * 4)
+        screen.blit(texte, rect)
 
 class Raquette:
     def __init__(self):
@@ -157,10 +176,10 @@ class Brique:
                 else: # a gauche
                     balle.vx = -balle.vx
         if touche:
-            self.vie -= 1
+            self.vie -= 1   
         return touche
 
-jeu = Jeu()
+jeu = Jeu(3)
 
 while True:
     jeu.gestion_evenements()
