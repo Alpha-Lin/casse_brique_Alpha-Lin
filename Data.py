@@ -1,12 +1,14 @@
 import pygame # Le module Pygame
 import pygame.freetype # Pour afficher du texte
 
+pygame.init() # initialisation de Pygame
+
 # Pour le texte.
 pygame.freetype.init()
 myfont=pygame.freetype.SysFont(None, 20) # texte de taille 20
 
 # Taille de la fenetre
-width, height = 800, 600
+width, height = pygame.display.Info().current_w, pygame.display.Info().current_h
 screen = pygame.display.set_mode((width, height))
 
 couleurs = [(255, 0, 0), # Rouge

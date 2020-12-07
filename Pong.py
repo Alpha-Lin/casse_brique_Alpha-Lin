@@ -2,8 +2,6 @@ from Data import pygame, couleurs, width, height, myfont, screen, NOIR
 from Raquette import Raquette
 from Jeu import Jeu
 
-pygame.init() # initialisation de Pygame
-
 pygame.display.set_caption("Ping")
 
 # Pour limiter le nombre d'images par seconde

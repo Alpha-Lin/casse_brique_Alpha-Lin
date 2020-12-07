@@ -61,5 +61,5 @@ class Jeu:
         rect.topleft = (width//100, height//25)
         screen.blit(texte, rect)
 
-        pygame.draw.rect(screen, couleurs[5], [width//100 * 7, height//100 * 7, width//25 * 21, height//25 * 21], (width + height) // 300) # Contour
+        pygame.draw.rect(screen, couleurs[5], [width//100 * 7, height//100 * 7, 84 * (width//100), 84 * (height//100)], (width + height) // 300) # Contour
 
