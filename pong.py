@@ -4,6 +4,7 @@ import pygame # Le module Pygame
 import pygame.freetype # Pour afficher du texte
 import math
 import time
+import keyboard
 
 pygame.init() # initialisation de Pygame
 
@@ -19,12 +20,18 @@ pygame.display.set_caption("Ping")
 # Pour limiter le nombre d'images par seconde
 clock=pygame.time.Clock()
 
-BLANC = (255, 255, 255)
+couleurs = [(255, 0, 0), # Rouge
+            (0, 255, 255), # Cyan
+            (0, 0, 255), # Bleu
+            (165, 42, 42), # Marron
+            (255, 255, 0), # Jaune
+            (255, 255, 255),] # Blanc
+
 NOIR = (0, 0, 0)
 
-RAYON_BALLE = 10
-XMIN, YMIN = 0,0
-XMAX, YMAX = width, height
+RAYON_BALLE = (width + height) // 170
+XMIN, YMIN = width//100 * 7 , height//100 * 7
+XMAX, YMAX = width//100 * 91, height//100 * 91
 
 class Balle:
     def vitesse_par_angle(self, angle):
@@ -38,7 +45,7 @@ class Balle:
         self.sur_raquette = True
 
     def afficher(self):
-        pygame.draw.rect(screen, BLANC, (int(self.x-RAYON_BALLE), int(self.y-RAYON_BALLE), 2*RAYON_BALLE, 2*RAYON_BALLE), 0)
+        pygame.draw.rect(screen, couleurs[5], (int(self.x-RAYON_BALLE), int(self.y-RAYON_BALLE), 2*RAYON_BALLE, 2*RAYON_BALLE), 0)
 
     def rebond_raquette(self, raquette):
         diff = raquette.x - self.x
@@ -66,18 +73,22 @@ class Balle:
                 self.vy = -self.vy
 
 class Jeu:
-    def __init__(self, vie):
+    def __init__(self, vie, vieBrique):
         self.vieConst = vie
-        self.initialisation(vie)
+        self.vieBrique = vieBrique
+        self.initialisation()
 
-    def initialisation(self, vie):
-        self.vie = vie
+    def initialisation(self):
+        self.vie = self.vieConst
         self.balle = Balle()
         self.raquette = Raquette()
-        self.lignesBriques = [[Brique(i * 70 + 25 + 15, j * 50 + 15 + 15) for j in range(5)] for i in range(11)]
+        self.lignesBriques = [[Brique(i * 58 * width // 800 + XMIN + RAYON_BALLE * 5, j * 45 * height // 600 + YMIN + RAYON_BALLE * 3, self.vieBrique) for j in range(5)] for i in range(11)]
 
     def gestion_evenements(self):
         # Gestion des evenements
+        if keyboard.is_pressed('esc'):
+            sys.exit()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit() # Pour quitter
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -90,7 +101,7 @@ class Jeu:
         x, y = pygame.mouse.get_pos()
         self.balle.deplacer(self.raquette, self)
         if self.vie == 0: # Quand la vie tombe à 0
-            self.initialisation(self.vieConst)
+            self.initialisation()
         else:
             for briques in self.lignesBriques:
                 for brique in briques:
@@ -110,11 +121,13 @@ class Jeu:
                 else:
                     score += 1
         texte, rect = myfont.render("Score : " + str(score), (125, 125, 125), size=16)
-        rect.topleft = (0 + width//100, 0 + height//100)
+        rect.topleft = (width//100, height//100)
         screen.blit(texte, rect)
         texte, rect = myfont.render("Vie : " + str(self.vie), (125, 125, 125), size=16)
-        rect.topleft = (0 + width//100, 0 + height//100 * 4)
+        rect.topleft = (width//100, height//100 * 4)
         screen.blit(texte, rect)
+
+        pygame.draw.rect(screen, couleurs[5], [width//100 * 7, height//100 * 7, width//100 * 84, height//100 * 84], (width + height) // 300) # Contour
 
 class Raquette:
     def __init__(self):
@@ -123,7 +136,7 @@ class Raquette:
         self.longueur = 10*RAYON_BALLE
 
     def afficher(self):
-        pygame.draw.rect(screen, BLANC, (int(self.x-self.longueur/2), int(self.y-RAYON_BALLE), self.longueur, 2*RAYON_BALLE), 0)
+        pygame.draw.rect(screen, couleurs[5], (int(self.x-self.longueur/2), int(self.y-RAYON_BALLE), self.longueur, 2*RAYON_BALLE), 0)
 
     def deplacer(self, x):
         if x - self.longueur/2 < XMIN:
@@ -139,10 +152,10 @@ class Raquette:
         return vertical and horizontal
 
 class Brique:
-    def __init__(self, x, y):
+    def __init__(self, x, y, vie):
         self.x = x
         self.y = y
-        self.vie = 1
+        self.vie = vie
         self.longueur = 5 * RAYON_BALLE
         self.largeur = 3 * RAYON_BALLE
 
@@ -150,7 +163,8 @@ class Brique:
         return self.vie > 0
 
     def afficher(self):
-        pygame.draw.rect(screen, BLANC, (int(self.x-self.longueur/2),
+        couleur = self.vie if self.vie <= 5 else self.vie - self.vie // 5
+        pygame.draw.rect(screen, couleurs[couleur], (int(self.x-self.longueur/2),
                                         int(self.y-self.largeur/2),
                                         self.longueur, self.largeur), 0)
 
@@ -179,7 +193,7 @@ class Brique:
             self.vie -= 1   
         return touche
 
-jeu = Jeu(3)
+jeu = Jeu(3, 2)
 
 while True:
     jeu.gestion_evenements()
