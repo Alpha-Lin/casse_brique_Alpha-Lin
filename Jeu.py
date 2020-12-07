@@ -15,7 +15,7 @@ class Jeu:
         self.balle = Balle()
         self.raquette = Raquette()
         self.perdu = False
-        self.lignesBriques = [[Brique(i * 58 * width // 800 + XMIN + RAYON_BALLE * 5, j * 45 * height // 600 + YMIN + RAYON_BALLE * 3, self.vieBrique) for j in range(5)] for i in range(11)]
+        self.lignesBriques = [[Brique(i * 29 * width // 400 + XMIN + RAYON_BALLE * 5, j * 3 * height // 40 + YMIN + RAYON_BALLE * 3, self.vieBrique) for j in range(5)] for i in range(11)]
 
     def gestion_evenements(self):
         # Gestion des evenements
@@ -54,12 +54,12 @@ class Jeu:
                     brique.afficher()
                 else:
                     score += 1
-        texte, rect = myfont.render("Score : " + str(score), couleurs[5], size = 16 * (width + height) // 1400)
+        texte, rect = myfont.render("Score : " + str(score), couleurs[5], size = 2 * (width + height) // 175)
         rect.topleft = (width//100, height//100)
         screen.blit(texte, rect)
-        texte, rect = myfont.render("Vie : " + str(self.vie), couleurs[5], size = 16 * (width + height) // 1400)
-        rect.topleft = (width//100, height//100 * 4)
+        texte, rect = myfont.render("Vie : " + str(self.vie), couleurs[5], size = 2 * (width + height) // 175)
+        rect.topleft = (width//100, height//25)
         screen.blit(texte, rect)
 
-        pygame.draw.rect(screen, couleurs[5], [width//100 * 7, height//100 * 7, width//100 * 84, height//100 * 84], (width + height) // 300) # Contour
+        pygame.draw.rect(screen, couleurs[5], [width//100 * 7, height//100 * 7, width//25 * 21, height//25 * 21], (width + height) // 300) # Contour
 

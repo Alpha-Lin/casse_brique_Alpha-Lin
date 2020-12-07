@@ -19,12 +19,12 @@ while True:
     else:
         screen.fill(NOIR)
 
-        texte, rect = myfont.render("Vous avez perdu", couleurs[5], size = 96 * (width + height) // 1400)
-        rect.topleft = (80 * width//1920 , height//10 * 3)
+        texte, rect = myfont.render("Vous avez perdu", couleurs[5], size = 12 * (width + height) // 175)
+        rect.topleft = (width//24 , height//10 * 3)
         screen.blit(texte, rect)
 
-        texte, rect = myfont.render("Appuyez sur la souris pour recommencer", couleurs[5], size = 32 * (width + height) // 1400)
-        rect.topleft = (250 * width//1920,  height//10 * 5)
+        texte, rect = myfont.render("Appuyez sur la souris pour recommencer", couleurs[5], size = 4 * (width + height) // 175)
+        rect.topleft = (25 * width//192,  height//2)
         screen.blit(texte, rect)
 
         for event in pygame.event.get():
