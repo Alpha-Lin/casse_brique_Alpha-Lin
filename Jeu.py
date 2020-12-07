@@ -2,7 +2,6 @@ from Balle import Balle
 from Raquette import Raquette
 from Brique import Brique
 from Data import *
-import keyboard
 import sys
 
 class Jeu:
@@ -15,15 +14,17 @@ class Jeu:
         self.vie = self.vieConst
         self.balle = Balle()
         self.raquette = Raquette()
+        self.perdu = False
         self.lignesBriques = [[Brique(i * 58 * width // 800 + XMIN + RAYON_BALLE * 5, j * 45 * height // 600 + YMIN + RAYON_BALLE * 3, self.vieBrique) for j in range(5)] for i in range(11)]
 
     def gestion_evenements(self):
         # Gestion des evenements
-        if keyboard.is_pressed('esc'):
-            sys.exit()
-
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: sys.exit() # Pour quitter
+            if event.type == pygame.QUIT:
+                sys.exit() # Pour quitter
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1: # Bouton gauche
                     if self.balle.sur_raquette:
@@ -34,7 +35,7 @@ class Jeu:
         x, y = pygame.mouse.get_pos()
         self.balle.deplacer(self.raquette, self)
         if self.vie == 0: # Quand la vie tombe à 0
-            self.initialisation()
+            self.perdu = True
         else:
             for briques in self.lignesBriques:
                 for brique in briques:
@@ -53,10 +54,10 @@ class Jeu:
                     brique.afficher()
                 else:
                     score += 1
-        texte, rect = myfont.render("Score : " + str(score), (125, 125, 125), size=16)
+        texte, rect = myfont.render("Score : " + str(score), couleurs[5], size = 16 * (width + height) // 1400)
         rect.topleft = (width//100, height//100)
         screen.blit(texte, rect)
-        texte, rect = myfont.render("Vie : " + str(self.vie), (125, 125, 125), size=16)
+        texte, rect = myfont.render("Vie : " + str(self.vie), couleurs[5], size = 16 * (width + height) // 1400)
         rect.topleft = (width//100, height//100 * 4)
         screen.blit(texte, rect)
 

@@ -6,7 +6,7 @@ pygame.freetype.init()
 myfont=pygame.freetype.SysFont(None, 20) # texte de taille 20
 
 # Taille de la fenetre
-width, height = 800, 600
+width, height =1920,1080
 screen = pygame.display.set_mode((width, height))
 
 couleurs = [(255, 0, 0), # Rouge
