@@ -39,5 +39,10 @@ class Brique:
                 else: # a gauche
                     balle.vx = -balle.vx
         if touche:
-            self.vie -= 1   
+            pygame.mixer.music.load("sounds/8-bit-shot.wav")
+            pygame.mixer.music.play()   
+            self.vie -= 1
+            if self.vie == 0:
+                pygame.mixer.music.load("sounds/8-bit-synth-chirp-notification.wav")
+                pygame.mixer.music.play()   
         return touche

@@ -35,6 +35,8 @@ class Balle:
             if self.x - RAYON_BALLE < XMIN:
                 self.vx = -self.vx
             if self.y + RAYON_BALLE > YMAX:
+                pygame.mixer.music.load("sounds/lose-sound.mp3")
+                pygame.mixer.music.play()   
                 self.sur_raquette = True
                 instance_jeu.vie -= 1
             if self.y - RAYON_BALLE < YMIN:
